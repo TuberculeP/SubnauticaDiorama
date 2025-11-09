@@ -8,12 +8,13 @@
     </div>
 
     <!-- Navigation Controls -->
-    <div class="controls-overlay">
+    <div class="controls-overlay top">
+
       <button 
-        @click="goToNextFloor" 
-        :disabled="currentFloor >= maxFloors - 1 || isAnimating"
+        @click="goToPreviousFloor"
+        :disabled="currentFloor <= 0 || isAnimating"
         class="cyber-btn"
-        title="Étage supérieur"
+        title="Étage inférieur"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
@@ -25,15 +26,16 @@
       </div>
       
       <button 
-        @click="goToPreviousFloor"
-        :disabled="currentFloor <= 0 || isAnimating"
+        @click="goToNextFloor" 
+        :disabled="currentFloor >= maxFloors - 1 || isAnimating"
         class="cyber-btn"
-        title="Étage inférieur"
+        title="Étage supérieur"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
         </svg>
       </button>
+      
     </div>
   </div>
 </template>
@@ -70,6 +72,10 @@ const floorTitles = [
   "Terrasse"
 ]
 
+// Camera positioning constants
+const CAMERA_BASE_Y = 6        // Starting Y position for floor 0
+const FLOOR_HEIGHT = -3.2        // Y offset between floors
+
 const floorColors = [
   "#1a1a2d", // Fondations - bleu foncé
   "#1a1d2d", // RDC - bleu-violet
@@ -87,9 +93,7 @@ const animateToFloor = async (floor: number) => {
   emit('floorChanged', floor)
   
   // Calculate target position based on floor
-  const floorHeight = 2 // 2 units per floor, adjust as needed
-  const baseY = 5 // Starting Y position
-  const targetY = baseY + (floor * floorHeight)
+  const targetY = CAMERA_BASE_Y + (floor * FLOOR_HEIGHT)
   const currentPos = camera.position.clone()
   const targetPos = new THREE.Vector3(currentPos.x, targetY, currentPos.z)
   
@@ -146,7 +150,7 @@ const init = () => {
 
   // Camera
   camera = new THREE.PerspectiveCamera(
-    75,
+    65,
     container.value.clientWidth / container.value.clientHeight,
     0.1,
     1000
@@ -220,7 +224,9 @@ const init = () => {
           child.add(line)
         }
       })
-      
+      // un peu sur la droite
+      model.rotation.y = 1.2
+
       scene.add(model)
       
       // Center the model
@@ -231,14 +237,12 @@ const init = () => {
       // Adjust camera distance based on model size
       const size = box.getSize(new THREE.Vector3())
       const maxDim = Math.max(size.x, size.y, size.z)
-      camera.position.setLength(maxDim * 2)
+      camera.position.setLength(maxDim * 1.6) // Rapproché de 2.0 à 1.6
       
-      // Set initial floor position and color
-      const baseY = 5
-      camera.position.y = baseY
+      // Set initial floor position and color (use same values as animateToFloor)
+      camera.position.y = CAMERA_BASE_Y
       // Set initial position
-      controls.setTarget(0, baseY, 0, false) // Target centered
-      camera.position.setLength(maxDim * 2)
+      controls.setTarget(0, CAMERA_BASE_Y, 0, false) // Target centered
       document.body.style.backgroundColor = floorColors[0] // Set initial background color
       controls.update(0.016)
     },
@@ -307,6 +311,11 @@ onUnmounted(() => {
   flex-direction: column;
   gap: 8px;
   z-index: 10;
+}
+
+.controls-overlay.top {
+  top: 24px;
+  bottom: auto;
 }
 
 .cyber-btn {
