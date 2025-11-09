@@ -17,29 +17,29 @@ export function useAudio() {
   // Audio files for each floor
   const audioSources = [
     {
-      src: '/audio/Salutations.mp3',
+      src: './audio/Salutations.mp3',
       title: 'Salutations',
     }, // Fondations
     {
-      src: '/audio/Mushroom Forest.mp3',
+      src: './audio/Mushroom Forest.mp3',
       title: 'Mushroom Forest',
     },
     {
-      src: '/audio/Islands Beneath the Sea.mp3',
+      src: './audio/Islands Beneath the Sea.mp3',
       title: 'Islands Beneath the Sea',
     },
     {
-      src: '/audio/Lost River.mp3',
+      src: './audio/Lost River.mp3',
       title: 'Lost River',
     },
     {
-      src: '/audio/Lava Castle.mp3',
+      src: './audio/Lava Castle.mp3',
       title: 'Lava Castle',
     },
   ]
   
   const audioTracks: AudioTrack[] = []
-  const scanAudio = new Audio('/audio/scan.wav')
+  const scanAudio = new Audio('./audio/scan.wav')
   
   // Initialize and preload all audio tracks
   const initializeAudio = async (): Promise<void> => {

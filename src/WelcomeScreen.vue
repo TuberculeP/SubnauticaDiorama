@@ -37,12 +37,12 @@ const loadingText = ref('Chargement des ressources...')
 
 // Audio files paths (adjust according to your audio files)
 const audioFiles = [
-  '/audio/Salutations.mp3',
-  '/audio/Mushroom Forest.mp3',
-  '/audio/Lost River.mp3',
-  '/audio/Lava Castle.mp3',
-  '/audio/Islands Beneath the Sea.mp3',
-  '/audio/scan.wav',
+  './audio/Salutations.mp3',
+  './audio/Mushroom Forest.mp3',
+  './audio/Lost River.mp3',
+  './audio/Lava Castle.mp3',
+  './audio/Islands Beneath the Sea.mp3',
+  './audio/scan.wav',
 ]
 
 const preloadAudio = async () => {

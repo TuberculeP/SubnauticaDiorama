@@ -129,13 +129,13 @@ const floorsData: FloorData[] = [
       <p>C'est sur cet étage que j'ai commencé à expérimenter les lumières.</p>
     `,
     references: [
-      { url: "/references/surface/1.jpg" },
-      { url: "/references/surface/2.webp" },
+      { url: "./references/surface/1.jpg" },
+      { url: "./references/surface/2.webp" },
     ],
     renders: [
-      { url: "/renders/surface/1.png" },
-      { url: "/renders/surface/2.png" },
-      { url: "/renders/surface/3.png" },
+      { url: "./renders/surface/1.png" },
+      { url: "./renders/surface/2.png" },
+      { url: "./renders/surface/3.png" },
     ]
   },
   {
@@ -152,18 +152,18 @@ const floorsData: FloorData[] = [
       <p>C'est dans ce biome que je me suis vraiment amusé à la bioluminescence, ce qui a donné lieu à beaucoup de temps alloué à l'équilibrage des couleurs. On remarque sur le modèle brut des contrastes étranges mais qui prennent leur sens au render</p>
     `,
     references: [
-        { url: "/references/mushroom/1.webp" },
-        { url: "/references/mushroom/2.jpg" },
-        { url: "/references/mushroom/3.webp" },
-        { url: "/references/mushroom/4.jpg" },
+        { url: "./references/mushroom/1.webp" },
+        { url: "./references/mushroom/2.jpg" },
+        { url: "./references/mushroom/3.webp" },
+        { url: "./references/mushroom/4.jpg" },
     ],
     renders: [
-      { url: "/renders/mushroom/1.png" },
-      { url: "/renders/mushroom/2.png" },
-      { url: "/renders/mushroom/3.png" },
-      { url: "/renders/mushroom/4.png" },
-      { url: "/renders/mushroom/5.png" },
-      { url: "/renders/mushroom/6.png" },
+      { url: "./renders/mushroom/1.png" },
+      { url: "./renders/mushroom/2.png" },
+      { url: "./renders/mushroom/3.png" },
+      { url: "./renders/mushroom/4.png" },
+      { url: "./renders/mushroom/5.png" },
+      { url: "./renders/mushroom/6.png" },
     ]
   },
   {
@@ -180,16 +180,16 @@ const floorsData: FloorData[] = [
       <p>Les recherches de référence pour le cyclops m'a fait me rendre compte que quand on ne trouve pas de résultat pour "XXX Voxel" on en trouve toujours pour "XXX Minecraft" !</p>
     `,
     references: [
-      { url: "/references/reef/1.png" },
-      { url: "/references/reef/2.jpg" },
-      { url: "/references/reef/3.webp" },
-      { url: "/references/reef/4.webp" },
-      { url: "/references/reef/5.jpg" },
+      { url: "./references/reef/1.png" },
+      { url: "./references/reef/2.jpg" },
+      { url: "./references/reef/3.webp" },
+      { url: "./references/reef/4.webp" },
+      { url: "./references/reef/5.jpg" },
     ],
     renders: [
-      { url: "/renders/reef/1.png" },
-      { url: "/renders/reef/2.png" },
-      { url: "/renders/reef/3.png" },
+      { url: "./renders/reef/1.png" },
+      { url: "./renders/reef/2.png" },
+      { url: "./renders/reef/3.png" },
     ]
   },
   {
@@ -205,16 +205,16 @@ const floorsData: FloorData[] = [
       <p>La rivière m'a aussi donné quelques sueurs à l'équilibrage des lumières. Le jeu ici est de donner cette impression de rivière vaporeuse. J'ai réussi à faire ça avec le material Glass + densité avec de l'emissive plus puissant en dessous.</p>
       `,
     references: [
-      { url: "/references/river/1.jpg" },
-      { url: "/references/river/2.webp" },
-      { url: "/references/river/3.jpg" },
-      { url: "/references/river/4.jpg" },
-      { url: "/references/river/5.jepg" },
+      { url: "./references/river/1.jpg" },
+      { url: "./references/river/2.webp" },
+      { url: "./references/river/3.jpg" },
+      { url: "./references/river/4.jpg" },
+      { url: "./references/river/5.jepg" },
     ],
     renders: [
-      { url: "/renders/river/1.png" },
-      { url: "/renders/river/2.png" },
-      { url: "/renders/river/3.png" },
+      { url: "./renders/river/1.png" },
+      { url: "./renders/river/2.png" },
+      { url: "./renders/river/3.png" },
     ]
   },
   {
@@ -231,13 +231,13 @@ const floorsData: FloorData[] = [
       <p>Il était prévu initialement que la zone de lave soit une zone de transition vers un ultime biome mais par manque de temps et par volonté de mettre en scène ce voxel sur ce site, c'est l'ultime biome réalisé.</p>
     `,
     references: [
-      { url: "/references/lava/1.jpg" },
-      { url: "/references/lava/2.webp" },
-      { url: "/references/lava/3.png" },
+      { url: "./references/lava/1.jpg" },
+      { url: "./references/lava/2.webp" },
+      { url: "./references/lava/3.png" },
     ],
     renders: [
-      { url: "/renders/lava/1.png" },
-      { url: "/renders/lava/2.png" },
+      { url: "./renders/lava/1.png" },
+      { url: "./renders/lava/2.png" },
     ]
   }
 ]

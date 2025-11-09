@@ -38,7 +38,6 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import CameraControls from 'camera-controls'
-import modelUrl from '/blender/tout.glb?url'
 
 const container = ref<HTMLDivElement>()
 
@@ -169,9 +168,8 @@ const init = () => {
 
   // Load GLB model
   const loader = new GLTFLoader()
-  console.log('Loading GLB model from:', modelUrl)
   loader.load(
-    modelUrl,
+    "./blender/tout.glb",
     (gltf) => {
       console.log('GLB model loaded successfully')
       model = gltf.scene
@@ -237,7 +235,7 @@ const init = () => {
     },
     (error) => {
       console.error('Error loading GLB model:', error)
-      console.error('Model URL was:', modelUrl)
+      console.error('Model URL was:', "./blender/tout.glb")
       if (error instanceof Error) {
         console.error('Error details:', {
           message: error.message,
