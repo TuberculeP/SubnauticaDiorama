@@ -84,7 +84,7 @@ import { ref, computed, watch } from 'vue'
 
 interface FloorImage {
   url: string
-  caption: string
+  caption?: string
 }
 
 interface FloorData {
@@ -108,83 +108,137 @@ const tabs = [
   { id: 'renders', label: 'Renders' }
 ]
 
-// Mock data - à remplacer par vos vraies données
+// Explications de 5 biomes Subnautica
+// - Surface
+// - Grottes Champignons
+// - Grand Récif
+// - Rivière Perdue
+// - Zone de Lave
 const floorsData: FloorData[] = [
   {
-    title: "Fondations",
-    subtitle: "Base structurelle",
+    title: "Surface",
+    subtitle: "Îles et structures alien",
     explanations: `
-      <h3>Concept architectural</h3>
-      <p>Les fondations représentent l'ancrage de notre structure dans l'environnement. Cette base massive en béton armé assure la stabilité de l'ensemble tout en créant une transition harmonieuse avec le sol.</p>
-      
-      <h3>Matériaux</h3>
-      <ul>
-        <li>Béton armé haute performance</li>
-        <li>Isolation thermique périphérique</li>
-        <li>Étanchéité membranaire</li>
-      </ul>
+      <h3>Éléments marquants</h3>
+      <p>La surface est majoritairement vide à l'exception de deux grandes îles sur lesquelles le joueur explore des anciennes bases humaines, un portail mystérieux et aussi une immense structure alien.</p>
+      <p>Cette structure est au centre de l'histoire du jeu : il s'agit d'un moyen de confinement planétaire (d'où l'énorme canon laser) que le joueur doit désactiver avant de pouvoir s'enfuir.</p>
+      <p>‎</p>
+      <h3>Technique utilisée</h3>
+      <p>L'île et la montagne est générée en "paint" avec une brush épaisse, puis plus fine pour dégrossir. Pas de technique particulière sur les couleurs.</p>
+      <p>La structure alien est conçue à partir de blocs bruts les uns sur les autres (sauf pour la partie canon faite vox par vox).
+      <p>C'est sur cet étage que j'ai commencé à expérimenter les lumières.</p>
     `,
     references: [
-      { url: "/api/placeholder/400/400", caption: "Référence architecturale 1" },
-      { url: "/api/placeholder/400/400", caption: "Référence architecturale 2" }
+      { url: "/references/surface/1.jpg" },
+      { url: "/references/surface/2.webp" },
     ],
     renders: [
-      { url: "/api/placeholder/400/400", caption: "Rendu technique des fondations" },
-      { url: "/api/placeholder/400/400", caption: "Vue en coupe" }
+      { url: "/renders/surface/1.png" },
+      { url: "/renders/surface/2.png" },
+      { url: "/renders/surface/3.png" },
     ]
   },
   {
-    title: "Rez-de-chaussée",
-    subtitle: "Espaces publics",
+    title: "Grottes Champignons",
+    subtitle: "Première grande caverne",
     explanations: `
-      <h3>Espaces de vie</h3>
-      <p>Le rez-de-chaussée accueille les espaces communs et les zones d'accueil. Large hall d'entrée, espaces de circulation fluides et ouvertures généreuses sur l'extérieur.</p>
-      
-      <h3>Fonctionnalités</h3>
-      <ul>
-        <li>Hall d'accueil double hauteur</li>
-        <li>Espaces de co-working</li>
-        <li>Zone de restauration</li>
-      </ul>
+      <h3>Éléments marquants</h3>
+      <p>La première grande caverne est une des plus grandes cavernes de Subnautica. On y accède par un réseau de tunnels dès les premières heures du jeu.</p>
+      <p>Cette caverne est remplie de champignons avec peu de végétation autour. On y trouve des serpents géants se cachant dans les champignons qui leur sert de nid.</p>
+      <p>On y trouve aussi la première base humaine abandonnée.</p>
+      <p>‎</p>
+      <h3>Technique utilisée</h3>
+      <p>Les murs et reliefs de la caverne sont également paint. Les coraux au mur sont faits avec un pattern disque 2d et les champignons sont faits main comme la base et le serpent puis utilisés comme pattern.</p>
+      <p>C'est dans ce biome que je me suis vraiment amusé à la bioluminescence, ce qui a donné lieu à beaucoup de temps alloué à l'équilibrage des couleurs. On remarque sur le modèle brut des contrastes étranges mais qui prennent leur sens au render</p>
     `,
     references: [
-      { url: "/api/placeholder/400/400", caption: "Inspiration hall moderne" },
-      { url: "/api/placeholder/400/400", caption: "Espaces de co-working" }
+        { url: "/references/mushroom/1.webp" },
+        { url: "/references/mushroom/2.jpg" },
+        { url: "/references/mushroom/3.webp" },
+        { url: "/references/mushroom/4.jpg" },
     ],
     renders: [
-      { url: "/api/placeholder/400/400", caption: "Vue intérieure hall" },
-      { url: "/api/placeholder/400/400", caption: "Perspective extérieure" }
+      { url: "/renders/mushroom/1.png" },
+      { url: "/renders/mushroom/2.png" },
+      { url: "/renders/mushroom/3.png" },
+      { url: "/renders/mushroom/4.png" },
+      { url: "/renders/mushroom/5.png" },
+      { url: "/renders/mushroom/6.png" },
     ]
   },
   {
-    title: "Premier étage",
-    subtitle: "Espaces de travail",
+    title: "Grand Récif",
+    subtitle: "Biome vaste et sombre",
     explanations: `
-      <h3>Bureaux modulaires</h3>
-      <p>Espaces de travail flexibles adaptables selon les besoins. Cloisons modulaires, éclairage naturel optimisé et zones de détente intégrées.</p>
+      <h3>Éléments marquants</h3>
+      <p>Un des biomes les plus verticaux du jeu. Il est parsemé de grandes plantes bioluminescentes en forme de boule qui semblent remplies d'air, retenu par des lianes.</p>
+      <p>On trouve peu de vie dans ce biome (ou galère à faire). J'ai préféré illustrer le Cyclops, le plus gros vaisseau constructible du jeu, pour une échelle de taille.</p>
+      <p>‎</p>
+      <h3>Technique utilisée</h3>
+      <p>La technique ici est semblable, l'idée majeure est de pouvoir faire une bioluminescence qui rende quand même un environnement sombre</p>
+      <p>Le biome fait plus décor "boîte" que les précédents pour illustrer le côté vaste réseau de grottes et laisser de la place au Cyclops modélisé à la main.</p>
+      <p>Les recherches de référence pour le cyclops m'a fait me rendre compte que quand on ne trouve pas de résultat pour "XXX Voxel" on en trouve toujours pour "XXX Minecraft" !</p>
     `,
-    references: [],
-    renders: []
+    references: [
+      { url: "/references/reef/1.png" },
+      { url: "/references/reef/2.jpg" },
+      { url: "/references/reef/3.webp" },
+      { url: "/references/reef/4.webp" },
+      { url: "/references/reef/5.jpg" },
+    ],
+    renders: [
+      { url: "/renders/reef/1.png" },
+      { url: "/renders/reef/2.png" },
+      { url: "/renders/reef/3.png" },
+    ]
   },
   {
-    title: "Deuxième étage",
-    subtitle: "Espaces techniques",
+    title: "Rivière Perdue",
+    subtitle: "Le grand souterrain",
     explanations: `
-      <h3>Infrastructure technique</h3>
-      <p>Niveau dédié aux équipements techniques et aux systèmes de climatisation. Accès facilité pour la maintenance.</p>
-    `,
-    references: [],
-    renders: []
+      <h3>Éléments marquants</h3>
+      <p>La rivière perdue est un biome long et étrange. Elle est composée de plusieurs sous-biomes que j'ai mélangé ici.</p>
+      <p>On y trouve la fameuse rivière, inspirée des vraies rivières sous-marines, d'un squelette d'une créature géante, et notamment du grand arbre, lieu de gestation des léviathans de la région.</p>
+      <p>‎</p>
+      <h3>Technique utilisée</h3>
+      <p>Le plus compliqué dans ce biome est la réalisation de l'arbre, 100% fait main avec patience et douleur.</p>
+      <p>La rivière m'a aussi donné quelques sueurs à l'équilibrage des lumières. Le jeu ici est de donner cette impression de rivière vaporeuse. J'ai réussi à faire ça avec le material Glass + densité avec de l'emissive plus puissant en dessous.</p>
+      `,
+    references: [
+      { url: "/references/river/1.jpg" },
+      { url: "/references/river/2.webp" },
+      { url: "/references/river/3.jpg" },
+      { url: "/references/river/4.jpg" },
+      { url: "/references/river/5.jepg" },
+    ],
+    renders: [
+      { url: "/renders/river/1.png" },
+      { url: "/renders/river/2.png" },
+      { url: "/renders/river/3.png" },
+    ]
   },
   {
-    title: "Terrasse",
-    subtitle: "Espace extérieur",
+    title: "Zone de Lave",
+    subtitle: "La Fin",
     explanations: `
-      <h3>Toiture végétalisée</h3>
-      <p>Espace de détente en hauteur avec vue panoramique. Intégration d'éléments végétaux et zones de repos.</p>
+      <h3>Éléments marquants</h3>
+      <p>La zone de lave est le dernier biome du jeu. Il ne contient que peu d'éléments marquants en comparaison de sa taille.</p>
+      <p>J'y représente ici le générateur d'énergie thermique alien.</p>
+      <p>‎</p>
+      <h3>Technique utilisée</h3>
+      <p>Mélange de toutes les techniques utilisées précédemment.</p>
+      <p>Le plus de temps passé a été sur l'équilibre des lumières pour une lave brillante mais des murs peu éclairés.</p>
+      <p>Il était prévu initialement que la zone de lave soit une zone de transition vers un ultime biome mais par manque de temps et par volonté de mettre en scène ce voxel sur ce site, c'est l'ultime biome réalisé.</p>
     `,
-    references: [],
-    renders: []
+    references: [
+      { url: "/references/lava/1.jpg" },
+      { url: "/references/lava/2.webp" },
+      { url: "/references/lava/3.png" },
+    ],
+    renders: [
+      { url: "/renders/lava/1.png" },
+      { url: "/renders/lava/2.png" },
+    ]
   }
 ]
 
@@ -345,23 +399,28 @@ watch(() => props.currentFloor, () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.95);
   z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 16px;
+  padding: 8px;
 }
 
 .modal-content {
   position: relative;
-  max-width: 80vw;
-  max-height: 80vh;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal-image {
   max-width: 100%;
-  max-height: 100%;
+  max-height: 85vh;
+  width: auto;
+  height: auto;
   object-fit: contain;
 }
 
@@ -399,5 +458,36 @@ watch(() => props.currentFloor, () => {
 
 .modal-close:hover {
   color: #4a90e2;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .modal-content {
+    max-width: 95vw;
+    max-height: 95vh;
+  }
+  
+  .modal-image {
+    max-height: 80vh;
+  }
+  
+  .modal-close {
+    font-size: 28px;
+    width: 36px;
+    height: 36px;
+    top: 8px;
+    right: 8px;
+  }
+  
+  .image-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+@media (max-height: 600px) {
+  .modal-image {
+    max-height: 75vh;
+  }
 }
 </style>

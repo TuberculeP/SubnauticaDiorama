@@ -1,12 +1,5 @@
 <template>
   <div ref="container" class="glb-viewer">
-    <!-- Floor Title Overlay -->
-    <div class="title-overlay">
-      <h1 class="floor-title">
-        {{ floorTitles[currentFloor] || `Étage ${currentFloor + 1}` }}
-      </h1>
-    </div>
-
     <!-- Navigation Controls -->
     <div class="controls-overlay top">
 
@@ -63,14 +56,6 @@ let model: THREE.Object3D | null = null
 const currentFloor = ref(0)
 const maxFloors = 5
 const isAnimating = ref(false)
-
-const floorTitles = [
-  "Surface",
-  "Grottes Champignons", 
-  "Grand Récif",
-  "Rivière Perdue",
-  "Zone de Lave"
-]
 
 // Camera positioning constants
 const CAMERA_BASE_Y = 6        // Starting Y position for floor 0

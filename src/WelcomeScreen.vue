@@ -1,10 +1,10 @@
 <template>
   <div class="welcome-screen">
     <div class="welcome-content">
-      <h1 class="welcome-title">Architecture 3D</h1>
-      <p class="welcome-subtitle">Exploration interactive avec expérience sonore</p>
+      <h1 class="welcome-title">Subnautica Diorama</h1>
+      <p class="welcome-subtitle">Exploration interactive</p>
       
-      <div class="loading-section" v-if="isLoading">
+      <div class="m"><div class="loading-section" v-if="isLoading">
         <div class="loading-spinner"></div>
         <p class="loading-text">{{ loadingText }}</p>
       </div>
@@ -16,7 +16,10 @@
         :disabled="!allLoaded"
       >
         {{ allLoaded ? 'Commencer' : 'Chargement...' }}
-      </button>
+      </button></div>
+
+      <p>Modé + Render fait en 4 jours sur <a href="https://ephtracy.github.io/" target="_blank">MagicaVoxel</a></p>
+      <p>Musiques originales par <a href="https://music.youtube.com/channel/UCP4KJHju2CZ3NBIJrICer-Q" target="_blank">Simon Chylinski</a></p>
     </div>
   </div>
 </template>
@@ -184,5 +187,16 @@ onMounted(() => {
 
 .start-button:active:not(:disabled) {
   transform: translateY(0);
+}
+
+.m {
+  margin-bottom: 32px;
+  margin-top: 16px;
+}
+
+a {
+  color: #4a90e2;
+  text-decoration: underline;
+  font-weight: bold;
 }
 </style>

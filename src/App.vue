@@ -17,11 +17,15 @@ const {
   cleanup,
   isPlaying,
   currentTrack,
-  isTransitioning 
+  isTransitioning,
+  playScanSound
 } = useAudio()
 
 const handleFloorChanged = async (floor: number) => {
   currentFloor.value = floor
+  
+  // Play UI sound effect
+  playScanSound()
   
   // Change music track if audio is ready
   if (audioReady.value) {
@@ -31,6 +35,9 @@ const handleFloorChanged = async (floor: number) => {
 
 const startExperience = async () => {
   try {
+    // Play UI sound effect
+    playScanSound()
+    
     // Start with first floor music
     await startWithTrack(0)
     audioReady.value = true

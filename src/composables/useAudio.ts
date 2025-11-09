@@ -39,6 +39,7 @@ export function useAudio() {
   ]
   
   const audioTracks: AudioTrack[] = []
+  const scanAudio = new Audio('/audio/scan.wav')
   
   // Initialize and preload all audio tracks
   const initializeAudio = async (): Promise<void> => {
@@ -217,6 +218,17 @@ export function useAudio() {
     await play()
   }
   
+  // Play UI sound effect
+  const playScanSound = (): void => {
+    try {
+      scanAudio.currentTime = 0
+      scanAudio.volume = 0.2
+      scanAudio.play()
+    } catch (error) {
+      console.warn('Failed to play scan sound:', error)
+    }
+  }
+
   // Cleanup
   const cleanup = (): void => {
     audioTracks.forEach(track => {
@@ -226,6 +238,8 @@ export function useAudio() {
         track.audio.load()
       }
     })
+    scanAudio.pause()
+    scanAudio.src = ''
     audioTracks.length = 0
     currentTrack.value = null
     isPlaying.value = false
@@ -315,6 +329,7 @@ export function useAudio() {
     setVolume,
     startWithTrack,
     preloadNextTrack,
+    playScanSound,
     cleanup
   }
 }
