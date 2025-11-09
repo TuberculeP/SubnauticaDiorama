@@ -1,23 +1,96 @@
 <template>
-  <div ref="container" class="glb-viewer"></div>
+  <div ref="container" class="glb-viewer">
+    <div class="floor-controls">
+      <button 
+        @click="goToNextFloor" 
+        :disabled="currentFloor >= maxFloors - 1 || isAnimating"
+        class="floor-btn floor-up"
+      >
+        ↑
+      </button>
+      <div class="floor-indicator">
+        {{ currentFloor + 1 }}/{{ maxFloors }}
+      </div>
+      <button 
+        @click="goToPreviousFloor"
+        :disabled="currentFloor <= 0 || isAnimating"
+        class="floor-btn floor-down"
+      >
+        ↓
+      </button>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import CameraControls from 'camera-controls'
 
 const container = ref<HTMLDivElement>()
 
 let scene: THREE.Scene
 let camera: THREE.PerspectiveCamera
 let renderer: THREE.WebGLRenderer
-let controls: OrbitControls
+let controls: CameraControls
 let model: THREE.Object3D | null = null
+
+// Floor navigation
+const currentFloor = ref(0)
+const maxFloors = 5
+const isAnimating = ref(false)
+
+// Floor navigation functions
+const animateToFloor = async (floor: number) => {
+  if (isAnimating.value || floor === currentFloor.value) return
+  
+  isAnimating.value = true
+  currentFloor.value = floor
+  
+  // Calculate target position based on floor
+  const floorHeight = 2 // 2 units per floor, adjust as needed
+  const baseY = 5 // Starting Y position
+  const targetY = baseY + (floor * floorHeight)
+  const currentPos = camera.position.clone()
+  const targetPos = new THREE.Vector3(currentPos.x, targetY, currentPos.z)
+  
+  // Use camera-controls smooth transition for both position and target
+  await Promise.all([
+    controls.setPosition(targetPos.x, targetPos.y, targetPos.z, true),
+    controls.setTarget(0, targetY, 0, true)
+  ])
+  
+  isAnimating.value = false
+}
+
+const goToNextFloor = () => {
+  if (currentFloor.value < maxFloors - 1) {
+    animateToFloor(currentFloor.value + 1)
+  }
+}
+
+const goToPreviousFloor = () => {
+  if (currentFloor.value > 0) {
+    animateToFloor(currentFloor.value - 1)
+  }
+}
+
+// Handle resize
+const handleResize = () => {
+  if (!container.value || !camera || !renderer) return
+  
+  camera.aspect = container.value.clientWidth / container.value.clientHeight
+  camera.updateProjectionMatrix()
+  
+  renderer.setSize(container.value.clientWidth, container.value.clientHeight)
+}
 
 const init = () => {
   if (!container.value) return
+
+  // Initialize camera-controls with THREE
+  CameraControls.install({ THREE })
 
   // Scene
   scene = new THREE.Scene()
@@ -41,10 +114,12 @@ const init = () => {
   renderer.outputColorSpace = THREE.SRGBColorSpace
   container.value.appendChild(renderer.domElement)
 
-  // OrbitControls
-  controls = new OrbitControls(camera, renderer.domElement)
-  controls.enableDamping = true
+  // Camera Controls
+  controls = new CameraControls(camera, renderer.domElement)
   controls.dampingFactor = 0.05
+  controls.mouseButtons.right = CameraControls.ACTION.NONE // Disable right-click pan
+  controls.minPolarAngle = Math.PI / 2 // Lock vertical rotation
+  controls.maxPolarAngle = Math.PI / 2 // Lock vertical rotation
 
   // Load GLB model
   const loader = new GLTFLoader()
@@ -53,6 +128,18 @@ const init = () => {
     (gltf) => {
       model = gltf.scene
       
+      // Add edge outlines to all meshes
+      model.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          const edges = new THREE.EdgesGeometry(child.geometry)
+          const line = new THREE.LineSegments(
+            edges, 
+            new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 2 })
+          )
+          line.renderOrder = 1
+          child.add(line)
+        }
+      })
       
       scene.add(model)
       
@@ -65,6 +152,11 @@ const init = () => {
       const size = box.getSize(new THREE.Vector3())
       const maxDim = Math.max(size.x, size.y, size.z)
       camera.position.setLength(maxDim * 2)
+      
+      // Set initial floor position
+      const baseY = 5
+      camera.position.y = baseY
+      controls.setTarget(0, baseY, 0, false) // Set initial target without animation
       controls.update()
     },
     (progress) => {
@@ -75,22 +167,14 @@ const init = () => {
     }
   )
 
-  // Handle resize
-  const handleResize = () => {
-    if (!container.value) return
-    
-    camera.aspect = container.value.clientWidth / container.value.clientHeight
-    camera.updateProjectionMatrix()
-    
-    renderer.setSize(container.value.clientWidth, container.value.clientHeight)
-  }
   
   window.addEventListener('resize', handleResize)
 
   // Animation loop
   const animate = () => {
     requestAnimationFrame(animate)
-    controls.update()
+    const delta = 0.016 // 60fps
+    const needsUpdate = controls.update(delta)
     renderer.render(scene, camera)
   }
   animate()
@@ -103,7 +187,7 @@ onMounted(() => {
 onUnmounted(() => {
   if (controls) controls.dispose()
   if (renderer) renderer.dispose()
-  window.removeEventListener('resize', init)
+  window.removeEventListener('resize', handleResize)
 })
 </script>
 
@@ -112,5 +196,52 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  position: relative;
+}
+
+.floor-controls {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 100;
+}
+
+.floor-btn {
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+}
+
+.floor-btn:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.9);
+  transform: scale(1.05);
+}
+
+.floor-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.floor-indicator {
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+  backdrop-filter: blur(10px);
 }
 </style>
