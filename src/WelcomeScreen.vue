@@ -37,11 +37,12 @@ const loadingText = ref('Chargement des ressources...')
 
 // Audio files paths (adjust according to your audio files)
 const audioFiles = [
-  '/audio/floor-0.mp3', // Fondations
-  '/audio/floor-1.mp3', // RDC
-  '/audio/floor-2.mp3', // Premier étage
-  '/audio/floor-3.mp3', // Deuxième étage
-  '/audio/floor-4.mp3'  // Terrasse
+  '/audio/Salutations.mp3',
+  '/audio/Mushroom Forest.mp3',
+  '/audio/Lost River.mp3',
+  '/audio/Lava Castle.mp3',
+  '/audio/Islands Beneath the Sea.mp3',
+  '/audio/scan.wav',
 ]
 
 const preloadAudio = async () => {

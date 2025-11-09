@@ -13,9 +13,20 @@ export default defineConfig({
     assetsInlineLimit: 0,
     rollupOptions: {
       output: {
-        manualChunks: undefined
+        manualChunks: undefined,
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name?.endsWith('.glb') || assetInfo.name?.endsWith('.gltf')) {
+            return 'assets/models/[name]-[hash][extname]'
+          }
+          return 'assets/[name]-[hash][extname]'
+        }
       }
     }
   },
-  assetsInclude: ['**/*.glb', '**/*.gltf']
+  assetsInclude: ['**/*.glb', '**/*.gltf'],
+  esbuild: {
+    supported: {
+      'top-level-await': true
+    }
+  }
 })
