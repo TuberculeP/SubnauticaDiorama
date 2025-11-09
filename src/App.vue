@@ -12,11 +12,11 @@ const audioReady = ref(false)
 // Initialize audio system
 const { 
   initializeAudio, 
-  changeTrack, 
+  changeTrackSmooth, 
   startWithTrack, 
   cleanup,
   isPlaying,
-  volume,
+  currentTrack,
   isTransitioning 
 } = useAudio()
 
@@ -25,7 +25,7 @@ const handleFloorChanged = async (floor: number) => {
   
   // Change music track if audio is ready
   if (audioReady.value) {
-    await changeTrack(floor)
+    await changeTrackSmooth(floor)
   }
 }
 
@@ -79,7 +79,7 @@ onUnmounted(() => {
         <div class="audio-controls" v-if="audioReady">
           <div class="audio-status">
             <span v-if="isTransitioning">♫ Transition...</span>
-            <span v-else-if="isPlaying">♫ En cours</span>
+            <span v-else-if="isPlaying">♫ {{currentTrack?.title}}</span>
             <span v-else>♫ Pause</span>
           </div>
         </div>

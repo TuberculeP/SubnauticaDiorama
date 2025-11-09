@@ -207,7 +207,6 @@ watch(() => props.currentFloor, () => {
 <style scoped>
 .floor-details-container {
   height: 100%;
-  background: #1a1a1a;
   border-right: 1px solid rgba(74, 144, 226, 0.3);
   display: flex;
   flex-direction: column;

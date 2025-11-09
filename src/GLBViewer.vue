@@ -65,11 +65,11 @@ const maxFloors = 5
 const isAnimating = ref(false)
 
 const floorTitles = [
-  "Fondations",
-  "Rez-de-chaussée", 
-  "Premier étage",
-  "Deuxième étage",
-  "Terrasse"
+  "Surface",
+  "Grottes Champignons", 
+  "Grand Récif",
+  "Rivière Perdue",
+  "Zone de Lave"
 ]
 
 // Camera positioning constants
@@ -77,11 +77,11 @@ const CAMERA_BASE_Y = 6        // Starting Y position for floor 0
 const FLOOR_HEIGHT = -3.2        // Y offset between floors
 
 const floorColors = [
-  "#1a1a2d", // Fondations - bleu foncé
-  "#1a1d2d", // RDC - bleu-violet
-  "#1a1a2d", // Premier - bleu marine
-  "#1d1a2d", // Deuxième - bleu-violet foncé
-  "#1a1f2d"  // Terrasse - bleu gris
+  "#070729",
+  "#2c0833",
+  "#060712",
+  "#232e1c",
+  "#290c07"
 ]
 
 // Floor navigation functions
@@ -100,7 +100,6 @@ const animateToFloor = async (floor: number) => {
   // Change page background color with smooth transition
   const body = document.body
   const currentStyle = window.getComputedStyle(body)
-  const currentColor = currentStyle.backgroundColor
   const targetColor = floorColors[floor]
   
   // Add CSS transition for smooth color change
