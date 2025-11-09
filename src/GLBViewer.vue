@@ -84,7 +84,6 @@ const animateToFloor = async (floor: number) => {
   
   // Change page background color with smooth transition
   const body = document.body
-  const currentStyle = window.getComputedStyle(body)
   const targetColor = floorColors[floor]
   
   // Add CSS transition for smooth color change

@@ -49,7 +49,7 @@ const preloadAudio = async () => {
     loadingText.value = 'Préchargement audio...'
     
     const audioPromises = audioFiles.map((src, index) => {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         const audio = new Audio()
         audio.src = src
         audio.preload = 'auto'
