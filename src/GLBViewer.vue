@@ -1,22 +1,38 @@
 <template>
   <div ref="container" class="glb-viewer">
-    <div class="floor-controls">
+    <!-- Floor Title Overlay -->
+    <div class="title-overlay">
+      <h1 class="floor-title">
+        {{ floorTitles[currentFloor] || `Étage ${currentFloor + 1}` }}
+      </h1>
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="controls-overlay">
       <button 
         @click="goToNextFloor" 
         :disabled="currentFloor >= maxFloors - 1 || isAnimating"
-        class="floor-btn floor-up"
+        class="cyber-btn"
+        title="Étage supérieur"
       >
-        ↑
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+        </svg>
       </button>
-      <div class="floor-indicator">
+      
+      <div class="cyber-indicator">
         {{ currentFloor + 1 }}/{{ maxFloors }}
       </div>
+      
       <button 
         @click="goToPreviousFloor"
         :disabled="currentFloor <= 0 || isAnimating"
-        class="floor-btn floor-down"
+        class="cyber-btn"
+        title="Étage inférieur"
       >
-        ↓
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
       </button>
     </div>
   </div>
@@ -30,6 +46,11 @@ import CameraControls from 'camera-controls'
 
 const container = ref<HTMLDivElement>()
 
+// Define emits
+const emit = defineEmits<{
+  floorChanged: [floor: number]
+}>()
+
 let scene: THREE.Scene
 let camera: THREE.PerspectiveCamera
 let renderer: THREE.WebGLRenderer
@@ -41,12 +62,29 @@ const currentFloor = ref(0)
 const maxFloors = 5
 const isAnimating = ref(false)
 
+const floorTitles = [
+  "Fondations",
+  "Rez-de-chaussée", 
+  "Premier étage",
+  "Deuxième étage",
+  "Terrasse"
+]
+
+const floorColors = [
+  "#1a1a2d", // Fondations - bleu foncé
+  "#1a1d2d", // RDC - bleu-violet
+  "#1a1a2d", // Premier - bleu marine
+  "#1d1a2d", // Deuxième - bleu-violet foncé
+  "#1a1f2d"  // Terrasse - bleu gris
+]
+
 // Floor navigation functions
 const animateToFloor = async (floor: number) => {
   if (isAnimating.value || floor === currentFloor.value) return
   
   isAnimating.value = true
   currentFloor.value = floor
+  emit('floorChanged', floor)
   
   // Calculate target position based on floor
   const floorHeight = 2 // 2 units per floor, adjust as needed
@@ -54,6 +92,16 @@ const animateToFloor = async (floor: number) => {
   const targetY = baseY + (floor * floorHeight)
   const currentPos = camera.position.clone()
   const targetPos = new THREE.Vector3(currentPos.x, targetY, currentPos.z)
+  
+  // Change page background color with smooth transition
+  const body = document.body
+  const currentStyle = window.getComputedStyle(body)
+  const currentColor = currentStyle.backgroundColor
+  const targetColor = floorColors[floor]
+  
+  // Add CSS transition for smooth color change
+  body.style.transition = 'background-color 0.8s ease'
+  body.style.backgroundColor = targetColor
   
   // Use camera-controls smooth transition for both position and target
   await Promise.all([
@@ -92,9 +140,9 @@ const init = () => {
   // Initialize camera-controls with THREE
   CameraControls.install({ THREE })
 
-  // Scene
+  // Scene with alpha background
   scene = new THREE.Scene()
-  scene.background = new THREE.Color(0x1a1a1a)
+  scene.background = null // Transparent background
 
   // Camera
   camera = new THREE.PerspectiveCamera(
@@ -103,10 +151,10 @@ const init = () => {
     0.1,
     1000
   )
-  camera.position.set(5, 5, 5)
+  camera.position.set(8, 5, 8) // Position décalée à droite
 
-  // Renderer
-  renderer = new THREE.WebGLRenderer({ antialias: true })
+  // Renderer with alpha
+  renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
   renderer.setSize(container.value.clientWidth, container.value.clientHeight)
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
   
@@ -185,10 +233,13 @@ const init = () => {
       const maxDim = Math.max(size.x, size.y, size.z)
       camera.position.setLength(maxDim * 2)
       
-      // Set initial floor position
+      // Set initial floor position and color
       const baseY = 5
       camera.position.y = baseY
-      controls.setTarget(0, baseY, 0, false) // Set initial target without animation
+      // Set initial position
+      controls.setTarget(0, baseY, 0, false) // Target centered
+      camera.position.setLength(maxDim * 2)
+      document.body.style.backgroundColor = floorColors[0] // Set initial background color
       controls.update(0.016)
     },
     (progress) => {
@@ -231,49 +282,70 @@ onUnmounted(() => {
   position: relative;
 }
 
-.floor-controls {
+.title-overlay {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 24px;
+  left: 24px;
+  z-index: 10;
+}
+
+.floor-title {
+  font-size: 32px;
+  font-weight: bold;
+  color: #4a90e2;
+  font-family: 'Aileron', monospace;
+  letter-spacing: 2px;
+  margin: 0;
+  text-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
+}
+
+.controls-overlay {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  z-index: 100;
+  z-index: 10;
 }
 
-.floor-btn {
+.cyber-btn {
   width: 48px;
   height: 48px;
-  border: none;
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
-  font-size: 24px;
-  font-weight: bold;
+  border: 1px solid rgba(74, 144, 226, 0.5);
+  background: transparent;
+  color: #4a90e2;
+  border-radius: 2px;
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  backdrop-filter: blur(10px);
 }
 
-.floor-btn:hover:not(:disabled) {
-  background: rgba(0, 0, 0, 0.9);
-  transform: scale(1.05);
+.cyber-btn:hover:not(:disabled) {
+  border-color: #4a90e2;
+  color: #6ba3f5;
+  box-shadow: 0 0 15px rgba(74, 144, 226, 0.3);
 }
 
-.floor-btn:disabled {
-  opacity: 0.4;
+.cyber-btn:disabled {
+  opacity: 0.3;
   cursor: not-allowed;
-  transform: none;
 }
 
-.floor-indicator {
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
+.cyber-indicator {
+  background: rgba(15, 15, 15, 0.8);
+  border: 1px solid rgba(74, 144, 226, 0.5);
+  color: #4a90e2;
   padding: 8px 12px;
-  border-radius: 6px;
+  border-radius: 2px;
+  min-width: 48px;
   text-align: center;
+  font-family: 'Aileron', monospace;
   font-weight: bold;
   font-size: 14px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(8px);
 }
 </style>
