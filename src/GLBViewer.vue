@@ -109,8 +109,18 @@ const init = () => {
   renderer = new THREE.WebGLRenderer({ antialias: true })
   renderer.setSize(container.value.clientWidth, container.value.clientHeight)
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-  renderer.toneMapping = THREE.ReinhardToneMapping
-  renderer.toneMappingExposure = 1
+  
+  // Tone mapping pour ajuster les couleurs - réduire l'exposition pour assombrir
+  // Options de tone mapping disponibles (décommentez celle que vous voulez tester):
+  renderer.toneMapping = THREE.ACESFilmicToneMapping // [ACTUEL] Plus contrasté et plus sombre
+  // renderer.toneMapping = THREE.ReinhardToneMapping // [DÉFAUT] Tone mapping standard 
+  // renderer.toneMapping = THREE.LinearToneMapping // Pas de tone mapping
+  // renderer.toneMapping = THREE.CineonToneMapping // Style cinématographique
+  // renderer.toneMapping = THREE.AgXToneMapping // Ton neutre, peu contrasté
+  
+  // Ajustements d'exposition (plus bas = plus sombre, plus haut = plus clair)
+  renderer.toneMappingExposure = 0.6 // Réduit de 1.0 à 0.6 pour assombrir les couleurs
+  // Valeurs suggérées à tester : 0.4 (très sombre), 0.6 (sombre), 0.8 (légèrement sombre), 1.0 (normal)
   renderer.outputColorSpace = THREE.SRGBColorSpace
   container.value.appendChild(renderer.domElement)
 
@@ -128,9 +138,31 @@ const init = () => {
     (gltf) => {
       model = gltf.scene
       
-      // Add edge outlines to all meshes
+      // Add edge outlines to all meshes and ajust materials for darker colors
       model.traverse((child) => {
         if (child instanceof THREE.Mesh) {
+          // Ajuster les matériaux pour des couleurs plus sombres
+          if (child.material) {
+            const material = Array.isArray(child.material) ? child.material : [child.material]
+            material.forEach((mat: any) => {
+              // Assurer que les textures de couleur utilisent sRGB encoding
+              if (mat.map) mat.map.colorSpace = THREE.SRGBColorSpace
+              if (mat.emissiveMap) mat.emissiveMap.colorSpace = THREE.SRGBColorSpace
+              if (mat.baseColorTexture) mat.baseColorTexture.colorSpace = THREE.SRGBColorSpace
+              
+              // Réduire l'intensité des couleurs émissives si présentes
+              if (mat.emissive && mat.emissive.isColor) {
+                mat.emissive.multiplyScalar(0.5)
+              }
+              
+              // Assombrir légèrement la couleur de base du matériau
+              if (mat.color && mat.color.isColor) {
+                mat.color.multiplyScalar(0.8) // Réduire de 20% la luminosité
+              }
+            })
+          }
+
+          // Ajouter les contours
           const edges = new THREE.EdgesGeometry(child.geometry)
           const line = new THREE.LineSegments(
             edges, 
@@ -157,7 +189,7 @@ const init = () => {
       const baseY = 5
       camera.position.y = baseY
       controls.setTarget(0, baseY, 0, false) // Set initial target without animation
-      controls.update()
+      controls.update(0.016)
     },
     (progress) => {
       console.log('Loading progress:', progress.loaded / progress.total * 100 + '%')
@@ -174,7 +206,7 @@ const init = () => {
   const animate = () => {
     requestAnimationFrame(animate)
     const delta = 0.016 // 60fps
-    const needsUpdate = controls.update(delta)
+    controls.update(delta)
     renderer.render(scene, camera)
   }
   animate()
